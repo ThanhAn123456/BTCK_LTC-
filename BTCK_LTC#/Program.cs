@@ -1,3 +1,6 @@
+using BTCK_LTC_.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace BTCK_LTC_
 {
     public class Program
@@ -8,7 +11,8 @@ namespace BTCK_LTC_
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddDbContext<QuanLyBaiDangCongTyContext>(options => options.UseSqlServer(
+                builder.Configuration.GetConnectionString("QuanLyBaiDangCongTyConnection")));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
