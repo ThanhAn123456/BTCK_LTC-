@@ -108,23 +108,26 @@ public partial class QuanLyBaiDangCongTyContext : DbContext
 
         modelBuilder.Entity<Post>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Post__3214EC2715A31C12");
+            entity.HasKey(e => e.Id).HasName("PK__Post__3214EC279D5A7F4C");
 
             entity.ToTable("Post");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-            entity.Property(e => e.Content).HasMaxLength(700);
+            entity.Property(e => e.Content).HasColumnType("ntext");
             entity.Property(e => e.EmployeeId).HasColumnName("EmployeeID");
+            entity.Property(e => e.Thumbnail)
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.Title).HasMaxLength(50);
 
             entity.HasOne(d => d.Category).WithMany(p => p.Posts)
                 .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK__Post__CategoryID__5DCAEF64");
+                .HasConstraintName("FK__Post__CategoryID__619B8048");
 
             entity.HasOne(d => d.Employee).WithMany(p => p.Posts)
                 .HasForeignKey(d => d.EmployeeId)
-                .HasConstraintName("FK__Post__EmployeeID__5CD6CB2B");
+                .HasConstraintName("FK__Post__EmployeeID__60A75C0F");
         });
 
         modelBuilder.Entity<Role>(entity =>

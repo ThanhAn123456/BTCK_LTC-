@@ -11,6 +11,8 @@ public partial class Post
 
     public string? Content { get; set; }
 
+    public string? Thumbnail { get; set; }
+
     public DateOnly? Date { get; set; }
 
     public DateOnly? PostDate { get; set; }
