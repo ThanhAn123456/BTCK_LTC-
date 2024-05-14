@@ -68,9 +68,9 @@ namespace BTCK_LTC_.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Id", employee.CompanyId);
-            ViewData["DerpartmentId"] = new SelectList(_context.Departments, "Id", "Id", employee.DerpartmentId);
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Id", employee.RoleId);
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", employee.CompanyId);
+            ViewData["DerpartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DerpartmentId);
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name", employee.RoleId);
             return View(employee);
         }
 
