@@ -53,7 +53,7 @@ namespace BTCK_LTC_.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Role role)
+        public async Task<IActionResult> Create([Bind("Id,Name,Post,Manage")] Role role)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace BTCK_LTC_.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Role role)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Post,Manage")] Role role)
         {
             if (id != role.Id)
             {
