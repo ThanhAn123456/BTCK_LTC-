@@ -9,5 +9,9 @@ public partial class Role
 
     public string? Name { get; set; }
 
+    public bool? Post { get; set; }
+
+    public bool? Manage { get; set; }
+
     public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 }
