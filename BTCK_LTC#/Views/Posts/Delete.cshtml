@@ -1,0 +1,64 @@
+﻿@model BTCK_LTC_.Models.Post
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Xóa</h1>
+
+<h3>Bạn có chắc chắn muốn xóa?</h3>
+<div>
+    <h4>Bài Đăng</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Content)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Thumbnail)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Thumbnail)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PostDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PostDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Category.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Employee)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Employee.Email)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Xóa" class="btn btn-outline-danger" /> |
+<a asp-action="Index">Quay trở lại</a>
+    </form>
+</div>
