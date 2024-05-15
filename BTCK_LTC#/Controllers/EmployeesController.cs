@@ -6,16 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BTCK_LTC_.Models;
+using Microsoft.Extensions.Hosting;
 
 namespace BTCK_LTC_.Controllers
 {
     public class EmployeesController : Controller
     {
         private readonly QuanLyBaiDangCongTyContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public EmployeesController(QuanLyBaiDangCongTyContext context)
+        public EmployeesController(QuanLyBaiDangCongTyContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         // GET: Employees
@@ -60,10 +63,22 @@ namespace BTCK_LTC_.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Gender,Birthday,Address,Email,PhoneNumber,Avatar,Username,Password,DerpartmentId,CompanyId,RoleId")] Employee employee)
+        public async Task<IActionResult> Create([Bind("Id,Name,Gender,Birthday,Address,Email,PhoneNumber,Avatar,Username,Password,DerpartmentId,CompanyId,RoleId")] Employee employee, IFormFile AvatarFile)
         {
             if (ModelState.IsValid)
             {
+                if (AvatarFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "avatars");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + AvatarFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await AvatarFile.CopyToAsync(fileStream);
+                    }
+                    employee.Avatar = uniqueFileName;
+                }
+
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -98,7 +113,7 @@ namespace BTCK_LTC_.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Gender,Birthday,Address,Email,PhoneNumber,Avatar,Username,Password,DerpartmentId,CompanyId,RoleId")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Gender,Birthday,Address,Email,PhoneNumber,Avatar,Username,Password,DerpartmentId,CompanyId,RoleId")] Employee employee, IFormFile AvatarFile)
         {
             if (id != employee.Id)
             {
@@ -109,6 +124,29 @@ namespace BTCK_LTC_.Controllers
             {
                 try
                 {
+                    if (AvatarFile != null)
+                    {
+                        string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "avatars");
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + AvatarFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await AvatarFile.CopyToAsync(fileStream);
+                        }
+
+                        // Delete the old avatar file if it exists
+                        if (!string.IsNullOrEmpty(employee.Avatar))
+                        {
+                            string oldFilePath = Path.Combine(uploadsFolder, employee.Avatar);
+                            if (System.IO.File.Exists(oldFilePath))
+                            {
+                                System.IO.File.Delete(oldFilePath);
+                            }
+                        }
+
+                        employee.Avatar = uniqueFileName;
+                    }
+
                     _context.Update(employee);
                     await _context.SaveChangesAsync();
                 }
@@ -125,9 +163,9 @@ namespace BTCK_LTC_.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Id", employee.CompanyId);
-            ViewData["DerpartmentId"] = new SelectList(_context.Departments, "Id", "Id", employee.DerpartmentId);
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Id", employee.RoleId);
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", employee.CompanyId);
+            ViewData["DerpartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DerpartmentId);
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name", employee.RoleId);
             return View(employee);
         }
 
@@ -160,6 +198,17 @@ namespace BTCK_LTC_.Controllers
             var employee = await _context.Employees.FindAsync(id);
             if (employee != null)
             {
+                // Xóa ảnh trong thư mục avatars
+                if (!string.IsNullOrEmpty(employee.Avatar))
+                {
+                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "avatars");
+                    string filePath = Path.Combine(uploadsFolder, employee.Avatar);
+
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
                 _context.Employees.Remove(employee);
             }
 
