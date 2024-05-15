@@ -16,7 +16,6 @@ public partial class Post
 
     public string? Thumbnail { get; set; }
 
-    [Required(ErrorMessage = "Date is required")]
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
     public DateOnly? Date { get; set; }
 

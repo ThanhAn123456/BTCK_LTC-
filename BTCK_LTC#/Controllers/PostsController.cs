@@ -6,16 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BTCK_LTC_.Models;
+using Microsoft.Extensions.Hosting;
 
 namespace BTCK_LTC_.Controllers
 {
     public class PostsController : Controller
     {
         private readonly QuanLyBaiDangCongTyContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public PostsController(QuanLyBaiDangCongTyContext context)
+        public PostsController(QuanLyBaiDangCongTyContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         // GET: Posts
@@ -58,10 +61,22 @@ namespace BTCK_LTC_.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Content,Thumbnail,Date,PostDate,EmployeeId,CategoryId")] Post post)
+        public async Task<IActionResult> Create([Bind("Id,Title,Content,Thumbnail,Date,PostDate,EmployeeId,CategoryId")] Post post, IFormFile ThumbnailFile)
         {
             if (ModelState.IsValid)
             {
+                if (ThumbnailFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "thumbnails");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + ThumbnailFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ThumbnailFile.CopyToAsync(fileStream);
+                    }
+                    post.Thumbnail = uniqueFileName;
+                }
+
                 _context.Add(post);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -94,7 +109,7 @@ namespace BTCK_LTC_.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content,Thumbnail,Date,PostDate,EmployeeId,CategoryId")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content,Thumbnail,Date,PostDate,EmployeeId,CategoryId")] Post post, IFormFile ThumbnailFile)
         {
             if (id != post.Id)
             {
@@ -105,6 +120,29 @@ namespace BTCK_LTC_.Controllers
             {
                 try
                 {
+                    if (ThumbnailFile != null)
+                    {
+                        string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "thumbnails");
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + ThumbnailFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await ThumbnailFile.CopyToAsync(fileStream);
+                        }
+
+                        // Delete the old avatar file if it exists
+                        if (!string.IsNullOrEmpty(post.Thumbnail))
+                        {
+                            string oldFilePath = Path.Combine(uploadsFolder, post.Thumbnail);
+                            if (System.IO.File.Exists(oldFilePath))
+                            {
+                                System.IO.File.Delete(oldFilePath);
+                            }
+                        }
+
+                        post.Thumbnail = uniqueFileName;
+                    }
+
                     _context.Update(post);
                     await _context.SaveChangesAsync();
                 }
@@ -154,6 +192,18 @@ namespace BTCK_LTC_.Controllers
             var post = await _context.Posts.FindAsync(id);
             if (post != null)
             {
+                // Xóa ảnh trong thư mục avatars
+                if (!string.IsNullOrEmpty(post.Thumbnail))
+                {
+                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "thumbnails");
+                    string filePath = Path.Combine(uploadsFolder, post.Thumbnail);
+
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+
                 _context.Posts.Remove(post);
             }
 
