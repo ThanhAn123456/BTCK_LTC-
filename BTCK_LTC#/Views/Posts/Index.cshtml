@@ -48,10 +48,10 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Thumbnail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
             </td> *@
+            <td> 
+                @Html.DisplayFor(modelItem => item.Date)
+            </td> 
             <td>
                 @Html.DisplayFor(modelItem => item.PostDate)
             </td>
@@ -59,7 +59,7 @@
                 @Html.DisplayFor(modelItem => item.Category.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Employee.Email)
+                @Html.DisplayFor(modelItem => item.Employee.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">Sửa</a>
