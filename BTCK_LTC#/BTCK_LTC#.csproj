@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\avatars\" />
+    <Folder Include="wwwroot\thumbnails\" />
   </ItemGroup>
 
 </Project>
