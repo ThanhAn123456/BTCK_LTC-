@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BTCK_LTC_.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace BTCK_LTC_.Controllers
 {
@@ -21,13 +23,35 @@ namespace BTCK_LTC_.Controllers
         // GET: Departments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Departments.ToListAsync());
+			//check role
+			var claims = GetClaims();
+			if (claims == null)
+			{
+				return RedirectToAction("Login", "Home");
+			}
+			if (!claims.Any(c => c.Type == "role" && c.Value == "Manage"))
+			{
+				return Forbid();
+			}
+
+			return View(await _context.Departments.ToListAsync());
         }
 
         // GET: Departments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+			//check role
+			var claims = GetClaims();
+			if (claims == null)
+			{
+				return RedirectToAction("Login", "Home");
+			}
+			if (!claims.Any(c => c.Type == "role" && c.Value == "Manage"))
+			{
+				return Forbid();
+			}
+
+			if (id == null)
             {
                 return NotFound();
             }
@@ -45,7 +69,18 @@ namespace BTCK_LTC_.Controllers
         // GET: Departments/Create
         public IActionResult Create()
         {
-            return View();
+			//check role
+			var claims = GetClaims();
+			if (claims == null)
+			{
+				return RedirectToAction("Login", "Home");
+			}
+			if (!claims.Any(c => c.Type == "role" && c.Value == "Manage"))
+			{
+				return Forbid();
+			}
+
+			return View();
         }
 
         // POST: Departments/Create
@@ -67,7 +102,18 @@ namespace BTCK_LTC_.Controllers
         // GET: Departments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+			//check role
+			var claims = GetClaims();
+			if (claims == null)
+			{
+				return RedirectToAction("Login", "Home");
+			}
+			if (!claims.Any(c => c.Type == "role" && c.Value == "Manage"))
+			{
+				return Forbid();
+			}
+
+			if (id == null)
             {
                 return NotFound();
             }
@@ -118,7 +164,18 @@ namespace BTCK_LTC_.Controllers
         // GET: Departments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+			//check role
+			var claims = GetClaims();
+			if (claims == null)
+			{
+				return RedirectToAction("Login", "Home");
+			}
+			if (!claims.Any(c => c.Type == "role" && c.Value == "Manage"))
+			{
+				return Forbid();
+			}
+
+			if (id == null)
             {
                 return NotFound();
             }
@@ -152,5 +209,20 @@ namespace BTCK_LTC_.Controllers
         {
             return _context.Departments.Any(e => e.Id == id);
         }
-    }
+
+		private IEnumerable<Claim> GetClaims()
+		{
+			var token = HttpContext.Session.GetString("JWToken");
+			if (string.IsNullOrEmpty(token))
+			{
+				return null;
+			}
+
+			var handler = new JwtSecurityTokenHandler();
+			var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+			var claims = jsonToken.Claims;
+
+			return claims;
+		}
+	}
 }

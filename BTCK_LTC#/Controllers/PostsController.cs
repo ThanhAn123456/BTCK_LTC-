@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BTCK_LTC_.Models;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace BTCK_LTC_.Controllers
 {
@@ -21,17 +24,39 @@ namespace BTCK_LTC_.Controllers
             _hostEnvironment = hostEnvironment;
         }
 
-        // GET: Posts
-        public async Task<IActionResult> Index()
+		// GET: Posts
+		public async Task<IActionResult> Index()
         {
-            var quanLyBaiDangCongTyContext = _context.Posts.Include(p => p.Category).Include(p => p.Employee);
+			//check role
+			var claims = GetClaims();
+			if (claims == null)
+			{
+				return RedirectToAction("Login", "Home");
+			}
+			if (!claims.Any(c => c.Type == "role" && c.Value == "Post"))
+			{
+				return Forbid();
+			}
+
+			var quanLyBaiDangCongTyContext = _context.Posts.Include(p => p.Category).Include(p => p.Employee);
             return View(await quanLyBaiDangCongTyContext.ToListAsync());
         }
 
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+			//check role
+			var claims = GetClaims();
+			if (claims == null)
+			{
+				return RedirectToAction("Login", "Home");
+			}
+			if (!claims.Any(c => c.Type == "role" && c.Value == "Post"))
+			{
+				return Forbid();
+			}
+
+			if (id == null)
             {
                 return NotFound();
             }
@@ -51,7 +76,18 @@ namespace BTCK_LTC_.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+			//check role
+			var claims = GetClaims();
+			if (claims == null)
+			{
+				return RedirectToAction("Login", "Home");
+			}
+			if (!claims.Any(c => c.Type == "role" && c.Value == "Post"))
+			{
+				return Forbid();
+			}
+
+			ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Name");
             return View();
         }
@@ -89,7 +125,18 @@ namespace BTCK_LTC_.Controllers
         // GET: Posts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+			//check role
+			var claims = GetClaims();
+			if (claims == null)
+			{
+				return RedirectToAction("Login", "Home");
+			}
+			if (!claims.Any(c => c.Type == "role" && c.Value == "Post"))
+			{
+				return Forbid();
+			}
+
+			if (id == null)
             {
                 return NotFound();
             }
@@ -167,7 +214,18 @@ namespace BTCK_LTC_.Controllers
         // GET: Posts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+			//check role
+			var claims = GetClaims();
+			if (claims == null)
+			{
+				return RedirectToAction("Login", "Home");
+			}
+			if (!claims.Any(c => c.Type == "role" && c.Value == "Post"))
+			{
+				return Forbid();
+			}
+
+			if (id == null)
             {
                 return NotFound();
             }
@@ -215,5 +273,20 @@ namespace BTCK_LTC_.Controllers
         {
             return _context.Posts.Any(e => e.Id == id);
         }
-    }
+
+		private IEnumerable<Claim> GetClaims()
+		{
+			var token = HttpContext.Session.GetString("JWToken");
+			if (string.IsNullOrEmpty(token))
+			{
+				return null;
+			}
+
+			var handler = new JwtSecurityTokenHandler();
+			var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+			var claims = jsonToken.Claims;
+
+			return claims;
+		}
+	}
 }
