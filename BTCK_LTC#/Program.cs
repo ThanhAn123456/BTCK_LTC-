@@ -1,4 +1,4 @@
-using BTCK_LTC_.Models;
+﻿using BTCK_LTC_.Models;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
@@ -15,7 +15,16 @@ namespace BTCK_LTC_
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<QuanLyBaiDangCongTyContext>(options => options.UseSqlServer(
                 builder.Configuration.GetConnectionString("QuanLyBaiDangCongTyConnection")));
-            var app = builder.Build();
+
+			// Cấu hình session
+			builder.Services.AddDistributedMemoryCache();
+			builder.Services.AddSession(options => {
+				options.IdleTimeout = TimeSpan.FromMinutes(30);
+				options.Cookie.HttpOnly = true;
+				options.Cookie.IsEssential = true;
+			});
+
+			var app = builder.Build();
 
             var supportedCultures = new[] { new CultureInfo("en-GB") }; // dd/MM/yyyy
             var localizationOptions = new RequestLocalizationOptions
@@ -35,7 +44,9 @@ namespace BTCK_LTC_
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+			app.UseSession();
+
+			app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
