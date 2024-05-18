@@ -385,6 +385,35 @@
 		$('.submenu-link[href="'+ relativePath +'"]').closest('.nav-item').find('.nav-link').addClass('active');
 		$('.submenu-link[href="'+ relativePath +'"]').addClass('active');
 	});
+
+	document.addEventListener('DOMContentLoaded', function () {
+		// Dùng querySelectorAll để lấy tất cả các phần tử có class 'submenu-link'
+		var submenuLinks = document.querySelectorAll('.submenu-link');
+
+		// Lặp qua từng phần tử và gắn sự kiện click
+		submenuLinks.forEach(function(link) {
+			link.addEventListener('click', function () {
+				fetch('/Companies/Index', {
+					method: 'GET',
+					headers: {
+						'Authorization': `Bearer ${localStorage.getItem('token')}`
+					}
+				})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Not authorized');
+					}
+					return response.json();
+				})
+				.then(data => {
+					console.log(data);
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+			});
+		});
+	});
 	</script>
 </body>
 </html> 
