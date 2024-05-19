@@ -1,6 +1,7 @@
 ﻿@using System.IdentityModel.Tokens.Jwt
 @{
 	var token = Context.Session.GetString("JWToken");
+	int id = Convert.ToInt32(Context.Session.GetString("ID"));
 	var name = Context.Session.GetString("Name");
 	var avatar = Context.Session.GetString("Avatar");
 
@@ -169,17 +170,17 @@
 						@if (token == null)
 						{
 							<div class="app-utility-item">
-								<a asp-area="" asp-controller="Home" asp-action="Login" style="margin: 0px 5px 0px 0px">Login</a>
+								<a asp-area="" asp-controller="Account" asp-action="Login" style="margin: 0px 5px 0px 0px">Đăng nhập</a>
 							</div>
 							
 						}else
 						{
 							<div class="app-utility-item app-user-dropdown dropdown">
-								<a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><img src="~/avatars/@avatar" style="border-radius:9999px"></a>
+								<a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><img src="~/avatars/@avatar" style="border-radius:9999px;"></a>
 								<ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
-									<li><a class="dropdown-item" href="account.html">Account</a></li>
+									<li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Index" asp-route-id="@id">Tài khoản</a></li>
 									<li><hr class="dropdown-divider"></li>
-									<li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Logout">Log Out</a></li>
+									<li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">Đăng xuất</a></li>
 								</ul>
 							</div><!--//app-user-dropdown-->	
 						}
@@ -238,7 +239,7 @@
 											<circle cx="3.5" cy="10.5" r=".5"/>
 										</svg>
 									</span>
-									<span class="nav-link-text">Orders</span>
+									<span class="nav-link-text">Bài đăng</span>
 								</a><!--//nav-link-->
 							</li><!--//nav-item-->
 						}
