@@ -38,7 +38,7 @@ namespace BTCK_LTC_.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-		// GET: Logins
+		// GET: Login
 		public IActionResult Login()
 		{
 			return View();
@@ -54,6 +54,8 @@ namespace BTCK_LTC_.Controllers
 			{
 				var token = GenerateJwtToken(user);
 				HttpContext.Session.SetString("JWToken", token);
+				HttpContext.Session.SetString("Name", user.Name);
+				HttpContext.Session.SetString("Avatar", user.Avatar);
 				return RedirectToAction(nameof(Index));
 			}
 
@@ -65,7 +67,13 @@ namespace BTCK_LTC_.Controllers
 		public IActionResult Logout()
 		{
 			HttpContext.Session.Clear();
-			return RedirectToAction("Login");
+			return RedirectToAction("Index");
+		}
+
+		// GET: Account
+		public IActionResult Account()
+		{
+			return View();
 		}
 
 		private string GenerateJwtToken(Employee employee)
