@@ -38,7 +38,9 @@ namespace BTCK_LTC_.Controllers
 				return Forbid();
 			}
 
-			var quanLyBaiDangCongTyContext = _context.Posts.Include(p => p.Category).Include(p => p.Employee);
+            var EmployeeId = Convert.ToInt32(HttpContext.Session.GetString("ID"));
+
+            var quanLyBaiDangCongTyContext = _context.Posts.Where(p => p.EmployeeId == EmployeeId).Include(p => p.Category).Include(p => p.Employee);
             return View(await quanLyBaiDangCongTyContext.ToListAsync());
         }
 
@@ -70,11 +72,15 @@ namespace BTCK_LTC_.Controllers
                 return NotFound();
             }
 
+            var CategoriesId = _context.Posts.FirstOrDefault(p => p.Id == id).CategoryId;
+
+            ViewData["CategoryId"] = CategoriesId;
+
             return View(post);
         }
 
         // GET: Posts/Create
-        public IActionResult Create()
+        public IActionResult CreateThongBao()
         {
 			//check role
 			var claims = GetClaims();
@@ -87,8 +93,11 @@ namespace BTCK_LTC_.Controllers
 				return Forbid();
 			}
 
-			ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Name");
+            var EmployeeId = Convert.ToInt32(HttpContext.Session.GetString("ID"));
+            var CategoriesId = _context.Categories.FirstOrDefault(c => c.Name == "Thông báo").Id;
+
+            ViewData["CategoryId"] = CategoriesId;
+            ViewData["EmployeeId"] = EmployeeId;
             return View();
         }
 
@@ -97,7 +106,7 @@ namespace BTCK_LTC_.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Content,Thumbnail,Date,PostDate,EmployeeId,CategoryId")] Post post, IFormFile? ThumbnailFile)
+        public async Task<IActionResult> CreateThongBao([Bind("Id,Title,Content,Thumbnail,Date,PostDate,EmployeeId,CategoryId")] Post post, IFormFile? ThumbnailFile)
         {
             if (ModelState.IsValid)
             {
@@ -117,8 +126,68 @@ namespace BTCK_LTC_.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Name", post.EmployeeId);
+
+            var EmployeeId = Convert.ToInt32(HttpContext.Session.GetString("ID"));
+            var CategoriesId = _context.Categories.FirstOrDefault(c => c.Name == "Thông báo").Id;
+
+            ViewData["CategoryId"] = CategoriesId;
+            ViewData["EmployeeId"] = EmployeeId;
+            return View(post);
+        }
+
+        // GET: Posts/Create
+        public IActionResult CreateLichTrinh()
+        {
+            //check role
+            var claims = GetClaims();
+            if (claims == null)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+            if (!claims.Any(c => c.Type == "role" && c.Value == "Post"))
+            {
+                return Forbid();
+            }
+
+            var EmployeeId = Convert.ToInt32(HttpContext.Session.GetString("ID"));
+            var CategoriesId = _context.Categories.FirstOrDefault(c => c.Name == "Lịch trình").Id;
+
+            ViewData["CategoryId"] = CategoriesId;
+            ViewData["EmployeeId"] = EmployeeId;
+            return View();
+        }
+
+        // POST: Posts/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateLichTrinh([Bind("Id,Title,Content,Thumbnail,Date,PostDate,EmployeeId,CategoryId")] Post post, IFormFile? ThumbnailFile)
+        {
+            if (ModelState.IsValid)
+            {
+                if (ThumbnailFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "thumbnails");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + ThumbnailFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ThumbnailFile.CopyToAsync(fileStream);
+                    }
+                    post.Thumbnail = uniqueFileName;
+                }
+
+                _context.Add(post);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            var EmployeeId = Convert.ToInt32(HttpContext.Session.GetString("ID"));
+            var CategoriesId = _context.Categories.FirstOrDefault(c => c.Name == "Lịch trình").Id;
+
+            ViewData["CategoryId"] = CategoriesId;
+            ViewData["EmployeeId"] = EmployeeId;
             return View(post);
         }
 
@@ -146,8 +215,12 @@ namespace BTCK_LTC_.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Name", post.EmployeeId);
+
+            var EmployeeId = Convert.ToInt32(HttpContext.Session.GetString("ID"));
+            var CategoriesId = _context.Posts.FirstOrDefault(p => p.Id == id).CategoryId;
+
+            ViewData["CategoryId"] = CategoriesId;
+            ViewData["EmployeeId"] = EmployeeId;
             return View(post);
         }
 
@@ -206,8 +279,12 @@ namespace BTCK_LTC_.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Name", post.EmployeeId);
+
+            var EmployeeId = Convert.ToInt32(HttpContext.Session.GetString("ID"));
+            var CategoriesId = _context.Posts.FirstOrDefault(p => p.Id == id).CategoryId;
+
+            ViewData["CategoryId"] = CategoriesId;
+            ViewData["EmployeeId"] = EmployeeId;
             return View(post);
         }
 
@@ -238,6 +315,10 @@ namespace BTCK_LTC_.Controllers
             {
                 return NotFound();
             }
+
+            var CategoriesId = _context.Posts.FirstOrDefault(p => p.Id == id).CategoryId;
+
+            ViewData["CategoryId"] = CategoriesId;
 
             return View(post);
         }

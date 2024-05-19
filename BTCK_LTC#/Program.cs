@@ -57,7 +57,7 @@ namespace BTCK_LTC_
 			builder.Services.AddAuthorization(options =>
 			{
 				options.AddPolicy("RequireManageRole", policy => policy.RequireRole("Manage"));
-				options.AddPolicy("RequirePostRole", policy => policy.RequireRole("Manage"));
+				options.AddPolicy("RequirePostRole", policy => policy.RequireRole("Post"));
 			});
 
 

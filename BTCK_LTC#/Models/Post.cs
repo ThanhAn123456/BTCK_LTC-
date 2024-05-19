@@ -9,6 +9,7 @@ public partial class Post
     public int Id { get; set; }
 
     [Required(ErrorMessage = "Title is required")]
+    [StringLength(150, MinimumLength = 20, ErrorMessage = "Title must be between 20 and 150 characters.")]
     public string? Title { get; set; }
 
     [Required(ErrorMessage = "Content is required")]

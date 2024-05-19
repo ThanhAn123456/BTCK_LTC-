@@ -1,19 +1,18 @@
 ﻿@model BTCK_LTC_.Models.Post
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Sửa</h1>
+<h1>Thêm mới</h1>
 
 <h4>Bài Đăng</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" enctype="multipart/form-data">
+        <form asp-action="CreateLichTrinh" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -26,23 +25,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Thumbnail" class="control-label"></label>
-                <input type="hidden" asp-for="Thumbnail" class="form-control" readonly />
-                <img src="~/thumbnails/@Model.Thumbnail" alt="Avatar" style="max-width: 200px; max-height: 200px; display:block" />
                 <input type="file" name="ThumbnailFile" class="form-control" />
                 <span asp-validation-for="Thumbnail" class="text-danger"></span>
             </div>
-            @if (ViewBag.CategoryId==2)
-            {
-                <div class="form-group">
-                    <label asp-for="Date" class="control-label"></label>
-                    <input asp-for="Date" class="form-control" />
-                    <span asp-validation-for="Date" class="text-danger"></span>
-                </div>
-            }
-            
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="PostDate" class="control-label"></label>
-                <input asp-for="PostDate" class="form-control" readonly />
+                <input asp-for="PostDate" value="@DateTime.Now.ToString("dd/MM/yyyy")" class="form-control" readonly/>
                 <span asp-validation-for="PostDate" class="text-danger"></span>
             </div>
 
@@ -51,7 +44,7 @@
             <input type="hidden" value="@ViewBag.CategoryId" asp-for="CategoryId" class="form-control" readonly/>
 
             <div class="form-group">
-                <input type="submit" value="Lưu" class="btn btn-outline-info" style="margin:5px 0px 0px 0px" />
+                <input type="submit" value="Thêm mới" class="btn btn-outline-info" style="margin:5px 0px 0px 0px" />
             </div>
         </form>
     </div>
