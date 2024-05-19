@@ -97,7 +97,7 @@ namespace BTCK_LTC_.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Content,Thumbnail,Date,PostDate,EmployeeId,CategoryId")] Post post, IFormFile ThumbnailFile)
+        public async Task<IActionResult> Create([Bind("Id,Title,Content,Thumbnail,Date,PostDate,EmployeeId,CategoryId")] Post post, IFormFile? ThumbnailFile)
         {
             if (ModelState.IsValid)
             {
@@ -156,7 +156,7 @@ namespace BTCK_LTC_.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content,Thumbnail,Date,PostDate,EmployeeId,CategoryId")] Post post, IFormFile ThumbnailFile)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content,Thumbnail,Date,PostDate,EmployeeId,CategoryId")] Post post, IFormFile? ThumbnailFile)
         {
             if (id != post.Id)
             {
