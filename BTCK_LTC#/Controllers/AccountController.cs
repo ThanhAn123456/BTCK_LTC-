@@ -137,17 +137,18 @@ namespace BTCK_LTC_.Controllers
 		{
 
 			var user = _context.Employees.FirstOrDefault(e => e.Username == employee.Username && e.Password == employee.Password);
-			if (user != null)
-			{
-				var token = GenerateJwtToken(user);
-				HttpContext.Session.SetString("JWToken", token);
-				HttpContext.Session.SetString("ID", user.Id.ToString());
-				HttpContext.Session.SetString("Name", user.Name);
-				HttpContext.Session.SetString("Avatar", user.Avatar);
-				return RedirectToAction("Index", "Home");
-			}
 
-			ModelState.AddModelError("", "Invalid username or password");
+            if (user != null)
+            {
+                var token = GenerateJwtToken(user);
+                HttpContext.Session.SetString("JWToken", token);
+                HttpContext.Session.SetString("ID", user.Id.ToString());
+                HttpContext.Session.SetString("Name", user.Name);
+                HttpContext.Session.SetString("Avatar", user.Avatar);
+                return RedirectToAction("Index", "Home");
+            }
+
+            ModelState.AddModelError("", "Invalid username or password");
 
 			return View();
 		}

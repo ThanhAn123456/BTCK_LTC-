@@ -31,7 +31,7 @@ namespace BTCK_LTC_.Controllers
 			var claims = GetClaims();
 			if (claims == null)
 			{
-				return RedirectToAction("Login", "Home");
+				return RedirectToAction("Login", "Account");
 			}
 			if (!claims.Any(c => c.Type == "role" && c.Value == "Post"))
 			{
@@ -51,7 +51,7 @@ namespace BTCK_LTC_.Controllers
 			var claims = GetClaims();
 			if (claims == null)
 			{
-				return RedirectToAction("Login", "Home");
+				return RedirectToAction("Login", "Account");
 			}
 			if (!claims.Any(c => c.Type == "role" && c.Value == "Post"))
 			{
@@ -86,7 +86,7 @@ namespace BTCK_LTC_.Controllers
 			var claims = GetClaims();
 			if (claims == null)
 			{
-				return RedirectToAction("Login", "Home");
+				return RedirectToAction("Login", "Account");
 			}
 			if (!claims.Any(c => c.Type == "role" && c.Value == "Post"))
 			{
@@ -142,7 +142,7 @@ namespace BTCK_LTC_.Controllers
             var claims = GetClaims();
             if (claims == null)
             {
-                return RedirectToAction("Login", "Home");
+                return RedirectToAction("Login", "Account");
             }
             if (!claims.Any(c => c.Type == "role" && c.Value == "Post"))
             {
@@ -198,7 +198,7 @@ namespace BTCK_LTC_.Controllers
 			var claims = GetClaims();
 			if (claims == null)
 			{
-				return RedirectToAction("Login", "Home");
+				return RedirectToAction("Login", "Account");
 			}
 			if (!claims.Any(c => c.Type == "role" && c.Value == "Post"))
 			{
@@ -295,7 +295,7 @@ namespace BTCK_LTC_.Controllers
 			var claims = GetClaims();
 			if (claims == null)
 			{
-				return RedirectToAction("Login", "Home");
+				return RedirectToAction("Login", "Account");
 			}
 			if (!claims.Any(c => c.Type == "role" && c.Value == "Post"))
 			{

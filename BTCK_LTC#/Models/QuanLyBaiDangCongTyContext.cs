@@ -35,7 +35,7 @@ public partial class QuanLyBaiDangCongTyContext : DbContext
     {
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC27820FE27C");
+            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC27FD4855F6");
 
             entity.ToTable("Category");
 
@@ -45,7 +45,7 @@ public partial class QuanLyBaiDangCongTyContext : DbContext
 
         modelBuilder.Entity<Company>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Company__3214EC27D0E39503");
+            entity.HasKey(e => e.Id).HasName("PK__Company__3214EC274D14D04F");
 
             entity.ToTable("Company");
 
@@ -56,7 +56,7 @@ public partial class QuanLyBaiDangCongTyContext : DbContext
 
         modelBuilder.Entity<Department>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Departme__3214EC271E4BF155");
+            entity.HasKey(e => e.Id).HasName("PK__Departme__3214EC2777629388");
 
             entity.ToTable("Department");
 
@@ -66,7 +66,7 @@ public partial class QuanLyBaiDangCongTyContext : DbContext
 
         modelBuilder.Entity<Employee>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC27ED18BAC4");
+            entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC27F7ED3443");
 
             entity.ToTable("Employee");
 
@@ -108,7 +108,7 @@ public partial class QuanLyBaiDangCongTyContext : DbContext
 
         modelBuilder.Entity<Post>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Post__3214EC27004B15ED");
+            entity.HasKey(e => e.Id).HasName("PK__Post__3214EC27A7139887");
 
             entity.ToTable("Post");
 
@@ -119,7 +119,7 @@ public partial class QuanLyBaiDangCongTyContext : DbContext
             entity.Property(e => e.Thumbnail)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Title).HasMaxLength(50);
+            entity.Property(e => e.Title).HasMaxLength(250);
 
             entity.HasOne(d => d.Category).WithMany(p => p.Posts)
                 .HasForeignKey(d => d.CategoryId)
@@ -132,7 +132,7 @@ public partial class QuanLyBaiDangCongTyContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC2791A91C35");
+            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC2761A9D692");
 
             entity.ToTable("Role");
 
