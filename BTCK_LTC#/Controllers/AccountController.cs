@@ -144,6 +144,10 @@ namespace BTCK_LTC_.Controllers
                 HttpContext.Session.SetString("JWToken", token);
                 HttpContext.Session.SetString("ID", user.Id.ToString());
                 HttpContext.Session.SetString("Name", user.Name);
+                if (user.Avatar == null)
+                {
+                    user.Avatar = "avatar_default.jpg";
+                }
                 HttpContext.Session.SetString("Avatar", user.Avatar);
                 return RedirectToAction("Index", "Home");
             }
