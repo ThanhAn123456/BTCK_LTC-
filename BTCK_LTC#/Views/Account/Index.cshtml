@@ -29,7 +29,15 @@
                     <div class="row justify-content-between align-items-center">
                         <div class="col-auto">
                             <div class="item-label mb-2"><strong>Avatar</strong></div>
-                            <div class="item-data"><img class="profile-image" src="~/avatars/@Model.Avatar"></div>
+                            @if (Model.Avatar == null)
+                            {
+                                <div class="item-data"><img class="profile-image" src="~/avatars/avatar_default.jpg"></div>
+                            }
+                            else
+                            {
+                                <div class="item-data"><img class="profile-image" src="~/avatars/@Model.Avatar"></div>
+                            }
+                            
                         </div><!--//col-->
                     </div><!--//row-->
                 </div><!--//item-->
