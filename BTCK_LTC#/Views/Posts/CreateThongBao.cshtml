@@ -5,12 +5,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+   /* increase height of ckeditor*/
+    .ck-editor__editable_inline {
+        min-height: 300px;
+        min-weight: 500px;
+    }
+</style>
+
 <h1>Thêm mới</h1>
 
 <h4>Bài Đăng</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="CreateThongBao" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -20,7 +28,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
+                <textarea asp-for="Content" class="form-control" id="Content"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -52,3 +60,19 @@
     <a asp-action="Index">Quay trở lại</a>
 </div>
 
+@section Scripts{
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
+    <script>
+        $(document).ready(function () {
+            // ckeditor 5 initialization
+            ClassicEditor
+                    .create(document.getElementById('Content'))
+                .then(editor => {
+                    console.log(editor);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+    </script>
+}
