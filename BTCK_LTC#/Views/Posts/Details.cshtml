@@ -21,7 +21,7 @@
             @Html.DisplayNameFor(model => model.Content)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Content)
+            @Html.Raw(Model.Content)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Thumbnail)
@@ -64,3 +64,14 @@
     <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-outline-info">Sửa</a> |
     <a asp-action="Index">Quay trở lại</a>
 </div>
+
+@section Scripts{
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            var images = document.querySelectorAll('img');
+            images.forEach((img) => {
+                img.style.maxWidth = '900px';
+            });
+        });
+    </script>
+}
