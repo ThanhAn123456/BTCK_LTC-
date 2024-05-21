@@ -21,7 +21,7 @@ namespace BTCK_LTC_.Controllers
         }
 
         // GET: Departments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchdocs)
         {
 			//check role
 			var claims = GetClaims();
@@ -34,7 +34,14 @@ namespace BTCK_LTC_.Controllers
 				return Forbid();
 			}
 
-			return View(await _context.Departments.ToListAsync());
+            IQueryable<Department> CompaniesContext = _context.Departments;
+
+            if (!string.IsNullOrEmpty(searchdocs))
+            {
+                CompaniesContext = CompaniesContext.Where(c => c.Name.Contains(searchdocs));
+            }
+
+            return View(await CompaniesContext.ToListAsync());
         }
 
         // GET: Departments/Details/5
