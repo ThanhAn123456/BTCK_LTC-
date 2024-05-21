@@ -34,14 +34,14 @@ namespace BTCK_LTC_.Controllers
 				return Forbid();
 			}
 
-            IQueryable<Department> CompaniesContext = _context.Departments;
+            IQueryable<Department> DepartmentsContext = _context.Departments;
 
             if (!string.IsNullOrEmpty(searchdocs))
             {
-                CompaniesContext = CompaniesContext.Where(c => c.Name.Contains(searchdocs));
+                DepartmentsContext = DepartmentsContext.Where(d => d.Name.Contains(searchdocs));
             }
 
-            return View(await CompaniesContext.ToListAsync());
+            return View(await DepartmentsContext.ToListAsync());
         }
 
         // GET: Departments/Details/5

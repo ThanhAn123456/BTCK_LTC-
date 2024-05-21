@@ -25,7 +25,7 @@ namespace BTCK_LTC_.Controllers
         }
 
 		// GET: Employees
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(string searchdocs, string Gender, string CompanyId, string DerpartmentId, string RoleId)
         {
 			//check role
 			var claims = GetClaims();
@@ -38,8 +38,36 @@ namespace BTCK_LTC_.Controllers
 				return Forbid();
 			}
 
-			var quanLyBaiDangCongTyContext = _context.Employees.Include(e => e.Company).Include(e => e.Derpartment).Include(e => e.Role);
-            return View(await quanLyBaiDangCongTyContext.ToListAsync());
+            IQueryable<Employee> EmployeesContext = _context.Employees.Include(e => e.Company).Include(e => e.Derpartment).Include(e => e.Role);
+
+            if (!string.IsNullOrEmpty(searchdocs))
+            {
+                EmployeesContext = EmployeesContext.Where(e => e.Name.Contains(searchdocs) || e.Email.Contains(searchdocs) || e.PhoneNumber.Contains(searchdocs));
+            }
+
+            if (!string.IsNullOrEmpty(Gender))
+            {
+                EmployeesContext = EmployeesContext.Where(e => e.Gender == Gender);
+            }
+
+            if (!string.IsNullOrEmpty(CompanyId))
+            {
+                EmployeesContext = EmployeesContext.Where(e => e.CompanyId == Convert.ToInt32(CompanyId));
+            }
+
+            if (!string.IsNullOrEmpty(DerpartmentId))
+            {
+                EmployeesContext = EmployeesContext.Where(e => e.DerpartmentId == Convert.ToInt32(DerpartmentId));
+            }
+            if (!string.IsNullOrEmpty(RoleId))
+            {
+                EmployeesContext = EmployeesContext.Where(e => e.RoleId == Convert.ToInt32(RoleId));
+            }
+
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
+            ViewData["DerpartmentId"] = new SelectList(_context.Departments, "Id", "Name");
+            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name");
+            return View(await EmployeesContext.ToListAsync());
         }
 
         // GET: Employees/Details/5

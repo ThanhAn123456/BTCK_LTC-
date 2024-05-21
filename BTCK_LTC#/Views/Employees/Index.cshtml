@@ -7,9 +7,43 @@
 
 <h1>Quản Lý Nhân Viên</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-outline-success">Thêm mới</a>
-</p>
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <p>
+        <a asp-action="Create" class="btn btn-outline-success">Thêm mới</a>
+    </p>
+    <form class="docs-search-form row gx-1 align-items-center" asp-action="Index" style="margin: 0px 0px 16px 0px;">
+
+        <div class="col-auto">
+            <input type="text" id="search-docs" name="searchdocs" class="form-control search-docs" placeholder="Tìm kiếm">
+        </div>
+        <div class="col-auto">
+            <select class="form-select w-auto" name="Gender">
+                    <option selected="" value="">-- All --</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <select class="form-select w-auto" name="CompanyId" asp-items="@ViewBag.CompanyId">
+                    <option selected="" value="">-- All --</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <select class="form-select w-auto" name="DerpartmentId" asp-items="@ViewBag.DerpartmentId">
+                    <option selected="" value="">-- All --</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <select class="form-select w-auto" name="RoleId" asp-items="@ViewBag.RoleId">
+                    <option selected="" value="">-- All --</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn app-btn-secondary">Tìm kiếm</button>
+        </div>
+    </form>
+</div>
+
 <table class="table">
     <thead>
         <tr>

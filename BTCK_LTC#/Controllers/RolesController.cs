@@ -38,7 +38,7 @@ namespace BTCK_LTC_.Controllers
 
             if (!string.IsNullOrEmpty(searchdocs))
             {
-                RolesContext = RolesContext.Where(c => c.Name.Contains(searchdocs));
+                RolesContext = RolesContext.Where(r => r.Name.Contains(searchdocs));
             }
 
             return View(await RolesContext.ToListAsync());
