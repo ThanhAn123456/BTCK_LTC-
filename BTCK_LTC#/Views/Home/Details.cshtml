@@ -1,0 +1,81 @@
+﻿@model BTCK_LTC_.Models.Post
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .center-content {
+        display: flex;
+        justify-content: center;
+    }
+    .content-section {
+        width: 80%;
+        max-width: 800px;
+        text-align: left;
+    }
+    .content-section h1 {
+        font-weight: bold;
+        text-align: center;
+    }
+    .content-section .content-body {
+        margin: 20px 0;
+    }
+    .content-section a {
+        display: block;
+        margin: 10px 0;
+        font-size: 16px;
+        color: #333;
+    }
+</style>
+
+<h1>Chi tiết</h1>
+
+<div>
+    @if (ViewBag.CategoryId == 1)
+    {
+        <h4>thông báo</h4>
+    }
+    else if (ViewBag.CategoryId == 2)
+    {
+        <h4>Lịch trình</h4>
+    }
+
+    <hr />
+    <div class="center-content">
+        <div class="content-section">
+            <h1>@Model.Title</h1>
+            <div class="content-body">
+                    @Html.Raw(Model.Content)
+            </div>
+                @if (ViewBag.CategoryId == 2)
+                {
+                    <div>
+                        <a><b>@Html.DisplayNameFor(model => model.Date):</b> @Html.DisplayFor(model => model.Date)</a>
+                    </div>
+                }
+            <div>
+                <a><b>@Html.DisplayNameFor(model => model.PostDate):</b> @Html.DisplayFor(model => model.PostDate)</a>
+            </div>
+            <div>
+                <a><b>Người đăng:</b> @Html.DisplayFor(model => model.Employee.Name)</a>
+            </div>
+            <div style="max-width: 100%; display: flex; justify-content: center;">
+                <a asp-action="Index" class="btn btn-outline-info">Quay trở lại</a>
+            </div>
+        </div>
+    </div>    
+</div>
+
+
+@section Scripts {
+        <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+                var images = document.querySelectorAll('img');
+                images.forEach((img) => {
+                    img.style.maxWidth = '100%';
+                });
+            });
+        </script>
+}
