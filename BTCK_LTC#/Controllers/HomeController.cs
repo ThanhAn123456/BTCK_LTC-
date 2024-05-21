@@ -1,5 +1,6 @@
 using BTCK_LTC_.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using System.Diagnostics;
@@ -12,16 +13,19 @@ namespace BTCK_LTC_.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-		
+		private readonly QuanLyBaiDangCongTyContext _context;
 
-		public HomeController(ILogger<HomeController> logger)
+		public HomeController(ILogger<HomeController> logger, QuanLyBaiDangCongTyContext context)
         {
             _logger = logger;
+			_context = context;
 		}
 
-        public IActionResult Index()
+		public async Task<IActionResult> Index()
         {
-            return View();
+			var BaiDangCongTyContext = _context.Posts.Include(p => p.Category).Include(p => p.Employee).ThenInclude(e => e.Company);
+
+			return View(await BaiDangCongTyContext.ToListAsync());
         }
 
         public IActionResult Privacy()
