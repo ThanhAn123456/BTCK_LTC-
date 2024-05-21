@@ -50,7 +50,26 @@ namespace BTCK_LTC_.Controllers
 			return View(await BaiDangCongTyContext.ToListAsync());
         }
 
-		public IActionResult Privacy()
+        // GET: Posts/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            var post = await _context.Posts
+                .Include(p => p.Category)
+                .Include(p => p.Employee)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            var CategoriesId = _context.Posts.FirstOrDefault(p => p.Id == id).CategoryId;
+
+            ViewData["CategoryId"] = CategoriesId;
+
+            return View(post);
+        }
+
+        public IActionResult Privacy()
         {
             return View();
         }
