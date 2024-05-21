@@ -1,6 +1,8 @@
 using BTCK_LTC_.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using System.Diagnostics;
@@ -21,14 +23,34 @@ namespace BTCK_LTC_.Controllers
 			_context = context;
 		}
 
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(string searchdocs, string CategoryId, string CompanyId)
         {
-			var BaiDangCongTyContext = _context.Posts.Include(p => p.Category).Include(p => p.Employee).ThenInclude(e => e.Company);
 
+			IQueryable<Post> BaiDangCongTyContext = _context.Posts.Include(p => p.Category).Include(p => p.Employee).ThenInclude(e => e.Company);
+
+			if (!string.IsNullOrEmpty(searchdocs))
+            {
+                BaiDangCongTyContext = BaiDangCongTyContext.Where(p => p.Title.Contains(searchdocs));
+			}
+
+			if (!string.IsNullOrEmpty(CategoryId))
+			{
+				BaiDangCongTyContext = BaiDangCongTyContext.Where(p => p.CategoryId == Convert.ToInt32(CategoryId));
+			}
+
+			if (!string.IsNullOrEmpty(CompanyId))
+			{
+				BaiDangCongTyContext = BaiDangCongTyContext.Where(p => p.Employee.CompanyId == Convert.ToInt32(CompanyId));
+			}
+
+			BaiDangCongTyContext = BaiDangCongTyContext.OrderByDescending(p => p.PostDate);
+
+			ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+			ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
 			return View(await BaiDangCongTyContext.ToListAsync());
         }
 
-        public IActionResult Privacy()
+		public IActionResult Privacy()
         {
             return View();
         }
