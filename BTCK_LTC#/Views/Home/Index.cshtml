@@ -12,9 +12,19 @@
 						 <div class="page-utilities">
 							<div class="row g-2 justify-content-start justify-content-md-end align-items-center">
 								<div class="col-auto">
-									<form class="docs-search-form row gx-1 align-items-center">
+									<form class="docs-search-form row gx-1 align-items-center" asp-action="Index">
 										<div class="col-auto">
 											<input type="text" id="search-docs" name="searchdocs" class="form-control search-docs" placeholder="Tìm kiếm">
+										</div>
+										<div class="col-auto">
+											<select class="form-select w-auto" name="CategoryId" asp-items="@ViewBag.CategoryId">
+													<option selected="" value="">-- All --</option>
+											</select>
+										</div>
+										<div class="col-auto">
+											<select class="form-select w-auto" name="CompanyId" asp-items="@ViewBag.CompanyId">
+													<option selected="" value="">-- All --</option>
+											</select>
 										</div>
 										<div class="col-auto">
 											<button type="submit" class="btn app-btn-secondary">Tìm kiếm</button>
@@ -22,13 +32,7 @@
 									</form>
 
 								</div><!--//col-->
-								<div class="col-auto">
-
-									<select class="form-select w-auto">
-											<option selected="" value="">All</option>
-
-									</select>
-								</div>
+								
 								
 							</div><!--//row-->
 						</div><!--//table-utilities-->
@@ -52,7 +56,12 @@
 									<div class="app-doc-meta">
 										<ul class="list-unstyled mb-0">
 											<li><span class="text-muted">Type:</span> @item.Category.Name</li>
+											<li><span class="text-muted">Employee:</span> @item.Employee.Name</li>
 											<li><span class="text-muted">Company:</span> @item.Employee.Company.Name</li>
+											@if (item.CategoryId == 2)
+											{
+												<li><span class="text-muted">Date:</span> @item.Date</li>
+											}
 											<li><span class="text-muted">Post Date:</span> @item.PostDate</li>
 										</ul>
 									</div><!--//app-doc-meta-->								

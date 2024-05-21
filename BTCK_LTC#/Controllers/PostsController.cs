@@ -25,7 +25,7 @@ namespace BTCK_LTC_.Controllers
         }
 
 		// GET: Posts
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(string searchdocs, string PostDate, string CategoryId)
         {
 			//check role
 			var claims = GetClaims();
@@ -40,7 +40,29 @@ namespace BTCK_LTC_.Controllers
 
             var EmployeeId = Convert.ToInt32(HttpContext.Session.GetString("ID"));
 
-            var quanLyBaiDangCongTyContext = _context.Posts.Where(p => p.EmployeeId == EmployeeId).Include(p => p.Category).Include(p => p.Employee);
+            IQueryable<Post> quanLyBaiDangCongTyContext = _context.Posts.Where(p => p.EmployeeId == EmployeeId).Include(p => p.Category).Include(p => p.Employee);
+
+            if (!string.IsNullOrEmpty(searchdocs))
+            {
+                quanLyBaiDangCongTyContext = quanLyBaiDangCongTyContext.Where(p => p.Title.Contains(searchdocs));
+            }
+
+            if (!string.IsNullOrEmpty(CategoryId))
+            {
+                quanLyBaiDangCongTyContext = quanLyBaiDangCongTyContext.Where(p => p.CategoryId == Convert.ToInt32(CategoryId));
+            }
+
+            if (PostDate == "1" || PostDate == null)
+            {
+                quanLyBaiDangCongTyContext = quanLyBaiDangCongTyContext.OrderByDescending(p => p.PostDate);
+            }
+            else
+            {
+                quanLyBaiDangCongTyContext = quanLyBaiDangCongTyContext.OrderBy(p => p.PostDate);
+            }
+
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["PostDate"] = PostDate;
             return View(await quanLyBaiDangCongTyContext.ToListAsync());
         }
 

@@ -7,10 +7,43 @@
 
 <h1>Quản Lý Bài Đăng</h1>
 
-<p>
-    <a asp-action="CreateThongBao" class="btn btn-outline-success" style="margin: 0px 5px 0px 0px">Thêm mới thông báo</a>
-    <a asp-action="CreateLichTrinh" class="btn btn-outline-success" style="margin: 0px 5px 0px 0px">Thêm mới lịch trình</a>
-</p>
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <p>
+        <a asp-action="CreateThongBao" class="btn btn-outline-success" style="margin: 0px 5px 0px 0px">Thêm mới thông báo</a>
+        <a asp-action="CreateLichTrinh" class="btn btn-outline-success" style="margin: 0px 5px 0px 0px">Thêm mới lịch trình</a>
+    </p>
+    <form class="docs-search-form row gx-1 align-items-center" asp-action="Index">
+        <div class="col-auto">
+            <input type="text" id="search-docs" name="searchdocs" class="form-control search-docs" placeholder="Tìm kiếm">
+        </div>
+        <div class="col-auto">
+            <select class="form-select w-auto" name="CategoryId" asp-items="@ViewBag.CategoryId">
+                    <option selected="" value="">-- All --</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            
+            <select class="form-select w-auto" name="PostDate">
+                @if (ViewBag.PostDate == "1" || ViewBag.PostDate == null)
+                {
+                        <option selected="" value="1">Mới nhất</option>
+                        <option value="2">Cũ nhất</option>
+                }
+                else
+                {
+                        <option value="1">Mới nhất</option>
+                        <option selected="" value="2">Cũ nhất</option>
+                }
+                
+                    
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn app-btn-secondary">Tìm kiếm</button>
+        </div>
+    </form>
+</div>
+
 <table class="table">
     <thead>
         <tr>
