@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Components.Web;
 using X.PagedList;
+using System.ComponentModel.Design;
 
 namespace BTCK_LTC_.Controllers
 {
@@ -44,7 +45,7 @@ namespace BTCK_LTC_.Controllers
 
             if (!string.IsNullOrEmpty(searchdocs))
             {
-                CompaniesContext = CompaniesContext.Where(c => c.Name.Contains(searchdocs) || c.Address.Contains(searchdocs));
+                CompaniesContext = CompaniesContext.Where(c => c.Name.Contains(searchdocs));
             }
 
 			CompaniesContext = CompaniesContext.OrderBy(c => c.Id);
@@ -52,6 +53,7 @@ namespace BTCK_LTC_.Controllers
 			int pageSize = Convert.ToInt32(_configuration["PageList:PageSize"]);
 			int currentPage = pageNumber ?? 1;
 
+			ViewData["CurrentSearchDocs"] = searchdocs;
 			return View(await CompaniesContext.ToPagedListAsync(currentPage, pageSize));
 		}
 

@@ -15,28 +15,75 @@
     <form class="docs-search-form row gx-1 align-items-center" asp-action="Index" style="margin: 0px 0px 16px 0px;">
 
         <div class="col-auto">
-            <input type="text" id="search-docs" name="searchdocs" class="form-control search-docs" placeholder="Tìm kiếm">
+            <input type="text" id="search-docs" name="searchdocs" value="@ViewData["CurrentSearchDocs"]" class="form-control search-docs" placeholder="Tìm kiếm">
         </div>
         <div class="col-auto">
             <select class="form-select w-auto" name="Gender">
-                    <option selected="" value="">-- All --</option>
+                <option value="">-- All --</option>
+                @if (ViewBag.CurrentGender == "Nam")
+                {
+                    <option selected="" value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                }
+                else if (ViewBag.CurrentGender == "Nữ")
+                {
+                    <option value="Nam">Nam</option>
+                    <option selected="" value="Nữ">Nữ</option>
+                }
+                else
+                {
                     <option value="Nam">Nam</option>
                     <option value="Nữ">Nữ</option>
+                }
+
             </select>
         </div>
         <div class="col-auto">
-            <select class="form-select w-auto" name="CompanyId" asp-items="@ViewBag.CompanyId">
-                    <option selected="" value="">-- All --</option>
+            <select class="form-select w-auto" name="CompanyId">
+                <option value="">-- All --</option>
+                @foreach (var item in ViewBag.CompanyIdList as SelectList)
+                {
+                    @if (item.Value == ViewBag.CurrentCompanyId)
+                    {
+                        <option selected="" value="@item.Value">@item.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }	
+                }
             </select>
         </div>
         <div class="col-auto">
-            <select class="form-select w-auto" name="DerpartmentId" asp-items="@ViewBag.DerpartmentId">
-                    <option selected="" value="">-- All --</option>
+            <select class="form-select w-auto" name="DerpartmentId">
+                <option value="">-- All --</option>
+                @foreach (var item in ViewBag.DerpartmentIdList as SelectList)
+                {
+                    @if (item.Value == ViewBag.CurrentDerpartmentId)
+                    {
+                        <option selected="" value="@item.Value">@item.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }	
+                }
             </select>
         </div>
         <div class="col-auto">
-            <select class="form-select w-auto" name="RoleId" asp-items="@ViewBag.RoleId">
-                    <option selected="" value="">-- All --</option>
+            <select class="form-select w-auto" name="RoleId">
+                <option value="">-- All --</option>
+                @foreach (var item in ViewBag.RoleIdList as SelectList)
+                {
+                    @if (item.Value == ViewBag.CurrentRoleId)
+                    {
+                        <option selected="" value="@item.Value">@item.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }	
+                }
             </select>
         </div>
         <div class="col-auto">
@@ -141,7 +188,12 @@
         @if (Model.HasPreviousPage)
         {
                     <li class="page-item">
-                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)">Previous</a>
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)" 
+                        asp-route-searchdocs="@ViewData["CurrentSearchDocs"]"
+                        asp-route-Gender="@ViewData["CurrentGender"]"
+                        asp-route-CompanyId="@ViewData["CurrentCompanyId"]"
+                        asp-route-DerpartmentId="@ViewData["CurrentDerpartmentId"]"
+                        asp-route-RoleId="@ViewData["CurrentRoleId"]">Previous</a>
                     </li>
         }
         else
@@ -162,22 +214,32 @@
             else
             {
                                 <li class="page-item">
-                                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
+                                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" 
+                                    asp-route-searchdocs="@ViewData["CurrentSearchDocs"]"
+                                    asp-route-Gender="@ViewData["CurrentGender"]"
+                                    asp-route-CompanyId="@ViewData["CurrentCompanyId"]"
+                                    asp-route-DerpartmentId="@ViewData["CurrentDerpartmentId"]"
+                                    asp-route-RoleId="@ViewData["CurrentRoleId"]">@i</a>
                                 </li>
             }
         }
 
         @if (Model.HasNextPage)
         {
-                        <li class="page-item">
-                            <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)">Next</a>
-                        </li>
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)" 
+                        asp-route-searchdocs="@ViewData["CurrentSearchDocs"]"
+                        asp-route-Gender="@ViewData["CurrentGender"]"
+                        asp-route-CompanyId="@ViewData["CurrentCompanyId"]"
+                        asp-route-DerpartmentId="@ViewData["CurrentDerpartmentId"]"
+                        asp-route-RoleId="@ViewData["CurrentRoleId"]">Next</a>
+                    </li>
         }
         else
         {
-                        <li class="page-item disabled">
-                            <a class="page-link">Next</a>
-                        </li>
+                    <li class="page-item disabled">
+                        <a class="page-link">Next</a>
+                    </li>
         }
     </ul>
 </nav><!--//app-pagination-->

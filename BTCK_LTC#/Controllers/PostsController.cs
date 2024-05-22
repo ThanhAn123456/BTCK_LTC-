@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using X.PagedList;
+using System.ComponentModel.Design;
 
 namespace BTCK_LTC_.Controllers
 {
@@ -67,9 +68,11 @@ namespace BTCK_LTC_.Controllers
 			int pageSize = Convert.ToInt32(_configuration["PageList:PageSize"]);
 			int currentPage = pageNumber ?? 1;
 
-			ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+			ViewData["CategoryIdList"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["PostDate"] = PostDate;
-            return View(await quanLyBaiDangCongTyContext.ToPagedListAsync(currentPage, pageSize));
+			ViewData["CurrentSearchDocs"] = searchdocs;
+			ViewData["CurrentCategoryId"] = CategoryId;
+			return View(await quanLyBaiDangCongTyContext.ToPagedListAsync(currentPage, pageSize));
         }
 
         // GET: Posts/Details/5

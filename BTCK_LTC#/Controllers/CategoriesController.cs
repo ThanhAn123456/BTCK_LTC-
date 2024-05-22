@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Drawing.Printing;
 using X.PagedList;
 using System.Configuration;
+using System.ComponentModel.Design;
 
 namespace BTCK_LTC_.Controllers
 {
@@ -51,6 +52,7 @@ namespace BTCK_LTC_.Controllers
 			int pageSize = Convert.ToInt32(_configuration["PageList:PageSize"]);
 			int currentPage = pageNumber ?? 1;
 
+			ViewData["CurrentSearchDocs"] = searchdocs;
 			return View(await CategoriesContext.ToPagedListAsync(currentPage, pageSize));
         }
 

@@ -72,10 +72,15 @@ namespace BTCK_LTC_.Controllers
 			int pageSize = Convert.ToInt32(_configuration["PageList:PageSize"]);
 			int currentPage = pageNumber ?? 1;
 
-			ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
-            ViewData["DerpartmentId"] = new SelectList(_context.Departments, "Id", "Name");
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name");
-            return View(await EmployeesContext.ToPagedListAsync(currentPage, pageSize));
+			ViewData["CompanyIdList"] = new SelectList(_context.Companies, "Id", "Name");
+            ViewData["DerpartmentIdList"] = new SelectList(_context.Departments, "Id", "Name");
+            ViewData["RoleIdList"] = new SelectList(_context.Roles, "Id", "Name");
+			ViewData["CurrentSearchDocs"] = searchdocs;
+            ViewData["CurrentGender"] = Gender;
+            ViewData["CurrentCompanyId"] = CompanyId;
+			ViewData["CurrentDerpartmentId"] = DerpartmentId;
+			ViewData["CurrentRoleId"] = RoleId;
+			return View(await EmployeesContext.ToPagedListAsync(currentPage, pageSize));
         }
 
         // GET: Employees/Details/5
