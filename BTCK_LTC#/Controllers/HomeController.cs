@@ -28,6 +28,12 @@ namespace BTCK_LTC_.Controllers
 
 		public async Task<IActionResult> Index(string searchdocs, string CategoryId, string CompanyId, int? pageNumber)
         {
+			//check login
+			var claims = GetClaims();
+			if (claims == null)
+			{
+				return RedirectToAction("Login", "Account");
+			}
 
 			IQueryable<Post> BaiDangCongTyContext = _context.Posts.Include(p => p.Category).Include(p => p.Employee).ThenInclude(e => e.Company);
 
@@ -62,7 +68,14 @@ namespace BTCK_LTC_.Controllers
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            var post = await _context.Posts
+			//check login
+			var claims = GetClaims();
+			if (claims == null)
+			{
+				return RedirectToAction("Login", "Account");
+			}
+
+			var post = await _context.Posts
                 .Include(p => p.Category)
                 .Include(p => p.Employee)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -87,6 +100,21 @@ namespace BTCK_LTC_.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }		
+        }
+
+		private IEnumerable<Claim> GetClaims()
+		{
+			var token = HttpContext.Session.GetString("JWToken");
+			if (string.IsNullOrEmpty(token))
+			{
+				return null;
+			}
+
+			var handler = new JwtSecurityTokenHandler();
+			var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+			var claims = jsonToken.Claims;
+
+			return claims;
+		}
 	}
 }
