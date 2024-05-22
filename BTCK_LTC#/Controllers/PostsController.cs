@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using X.PagedList;
 
 namespace BTCK_LTC_.Controllers
 {
@@ -17,15 +18,17 @@ namespace BTCK_LTC_.Controllers
     {
         private readonly QuanLyBaiDangCongTyContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
+		private readonly IConfiguration _configuration;
 
-        public PostsController(QuanLyBaiDangCongTyContext context, IWebHostEnvironment hostEnvironment)
+		public PostsController(QuanLyBaiDangCongTyContext context, IWebHostEnvironment hostEnvironment, IConfiguration configuration)
         {
             _context = context;
             _hostEnvironment = hostEnvironment;
-        }
+			_configuration = configuration;
+		}
 
 		// GET: Posts
-		public async Task<IActionResult> Index(string searchdocs, string PostDate, string CategoryId)
+		public async Task<IActionResult> Index(string searchdocs, string PostDate, string CategoryId, int? pageNumber)
         {
 			//check role
 			var claims = GetClaims();
@@ -61,9 +64,12 @@ namespace BTCK_LTC_.Controllers
                 quanLyBaiDangCongTyContext = quanLyBaiDangCongTyContext.OrderBy(p => p.PostDate);
             }
 
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+			int pageSize = Convert.ToInt32(_configuration["PageList:PageSize"]);
+			int currentPage = pageNumber ?? 1;
+
+			ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["PostDate"] = PostDate;
-            return View(await quanLyBaiDangCongTyContext.ToListAsync());
+            return View(await quanLyBaiDangCongTyContext.ToPagedListAsync(currentPage, pageSize));
         }
 
         // GET: Posts/Details/5

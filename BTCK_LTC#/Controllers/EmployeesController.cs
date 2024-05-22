@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using X.PagedList;
 
 namespace BTCK_LTC_.Controllers
 {
@@ -17,15 +18,17 @@ namespace BTCK_LTC_.Controllers
     {
         private readonly QuanLyBaiDangCongTyContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
+		private readonly IConfiguration _configuration;
 
-        public EmployeesController(QuanLyBaiDangCongTyContext context, IWebHostEnvironment hostEnvironment)
+		public EmployeesController(QuanLyBaiDangCongTyContext context, IWebHostEnvironment hostEnvironment, IConfiguration configuration)
         {
             _context = context;
             _hostEnvironment = hostEnvironment;
-        }
+			_configuration = configuration;
+		}
 
 		// GET: Employees
-		public async Task<IActionResult> Index(string searchdocs, string Gender, string CompanyId, string DerpartmentId, string RoleId)
+		public async Task<IActionResult> Index(string searchdocs, string Gender, string CompanyId, string DerpartmentId, string RoleId, int? pageNumber)
         {
 			//check role
 			var claims = GetClaims();
@@ -64,10 +67,15 @@ namespace BTCK_LTC_.Controllers
                 EmployeesContext = EmployeesContext.Where(e => e.RoleId == Convert.ToInt32(RoleId));
             }
 
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
+			EmployeesContext = EmployeesContext.OrderBy(e => e.Id);
+
+			int pageSize = Convert.ToInt32(_configuration["PageList:PageSize"]);
+			int currentPage = pageNumber ?? 1;
+
+			ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
             ViewData["DerpartmentId"] = new SelectList(_context.Departments, "Id", "Name");
             ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name");
-            return View(await EmployeesContext.ToListAsync());
+            return View(await EmployeesContext.ToPagedListAsync(currentPage, pageSize));
         }
 
         // GET: Employees/Details/5

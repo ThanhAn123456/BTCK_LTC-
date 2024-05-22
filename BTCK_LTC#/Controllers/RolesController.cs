@@ -8,20 +8,23 @@ using Microsoft.EntityFrameworkCore;
 using BTCK_LTC_.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using X.PagedList;
 
 namespace BTCK_LTC_.Controllers
 {
     public class RolesController : Controller
     {
         private readonly QuanLyBaiDangCongTyContext _context;
+		private readonly IConfiguration _configuration;
 
-        public RolesController(QuanLyBaiDangCongTyContext context)
+		public RolesController(QuanLyBaiDangCongTyContext context, IConfiguration configuration)
         {
             _context = context;
-        }
+			_configuration = configuration;
+		}
 
         // GET: Roles
-        public async Task<IActionResult> Index(string searchdocs)
+        public async Task<IActionResult> Index(string searchdocs, int? pageNumber)
         {
 			//check role
 			var claims = GetClaims();
@@ -41,7 +44,12 @@ namespace BTCK_LTC_.Controllers
                 RolesContext = RolesContext.Where(r => r.Name.Contains(searchdocs));
             }
 
-            return View(await RolesContext.ToListAsync());
+			RolesContext = RolesContext.OrderBy(r => r.Id);
+
+			int pageSize = Convert.ToInt32(_configuration["PageList:PageSize"]);
+			int currentPage = pageNumber ?? 1;
+
+			return View(await RolesContext.ToPagedListAsync(currentPage, pageSize));
         }
 
         // GET: Roles/Details/5
