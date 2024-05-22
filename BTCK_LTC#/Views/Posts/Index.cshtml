@@ -15,11 +15,22 @@
     </p>
     <form class="docs-search-form row gx-1 align-items-center" asp-action="Index">
         <div class="col-auto">
-            <input type="text" id="search-docs" name="searchdocs" class="form-control search-docs" placeholder="Tìm kiếm">
+            <input type="text" id="search-docs" name="searchdocs" value="@ViewData["CurrentSearchDocs"]" class="form-control search-docs" placeholder="Tìm kiếm">
         </div>
         <div class="col-auto">
-            <select class="form-select w-auto" name="CategoryId" asp-items="@ViewBag.CategoryId">
-                    <option selected="" value="">-- All --</option>
+            <select class="form-select w-auto" name="CategoryId">
+                <option value="">-- All --</option>
+                @foreach (var item in ViewBag.CategoryIdList as SelectList)
+                {
+                    @if (item.Value == ViewBag.CurrentCategoryId)
+                    {
+                        <option selected="" value="@item.Value">@item.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }	
+                }
             </select>
         </div>
         <div class="col-auto">
@@ -34,9 +45,7 @@
                 {
                         <option value="1">Mới nhất</option>
                         <option selected="" value="2">Cũ nhất</option>
-                }
-                
-                    
+                }           
             </select>
         </div>
         <div class="col-auto">
@@ -111,7 +120,9 @@
         @if (Model.HasPreviousPage)
         {
                     <li class="page-item">
-                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)">Previous</a>
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)" 
+                        asp-route-searchdocs="@ViewData["CurrentSearchDocs"]"
+                        asp-route-CategoryId="@ViewData["CurrentCategoryId"]">Previous</a>
                     </li>
         }
         else
@@ -132,22 +143,26 @@
             else
             {
                                 <li class="page-item">
-                                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
+                                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" 
+                                    asp-route-searchdocs="@ViewData["CurrentSearchDocs"]"
+                                    asp-route-CategoryId="@ViewData["CurrentCategoryId"]">@i</a>
                                 </li>
             }
         }
 
         @if (Model.HasNextPage)
         {
-                        <li class="page-item">
-                            <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)">Next</a>
-                        </li>
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)" 
+                        asp-route-searchdocs="@ViewData["CurrentSearchDocs"]"
+                        asp-route-CategoryId="@ViewData["CurrentCategoryId"]">Next</a>
+                    </li>
         }
         else
         {
-                        <li class="page-item disabled">
-                            <a class="page-link">Next</a>
-                        </li>
+                    <li class="page-item disabled">
+                        <a class="page-link">Next</a>
+                    </li>
         }
     </ul>
 </nav><!--//app-pagination-->

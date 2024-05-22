@@ -17,12 +17,14 @@ namespace BTCK_LTC_.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 		private readonly QuanLyBaiDangCongTyContext _context;
+        private readonly IConfiguration _configuration;
 
-		public HomeController(ILogger<HomeController> logger, QuanLyBaiDangCongTyContext context)
+        public HomeController(ILogger<HomeController> logger, QuanLyBaiDangCongTyContext context, IConfiguration configuration)
         {
             _logger = logger;
 			_context = context;
-		}
+            _configuration = configuration;
+        }
 
 		public async Task<IActionResult> Index(string searchdocs, string CategoryId, string CompanyId, int? pageNumber)
         {
@@ -46,12 +48,15 @@ namespace BTCK_LTC_.Controllers
 
 			BaiDangCongTyContext = BaiDangCongTyContext.OrderByDescending(p => p.PostDate);
 
-            int pageSize = 4;
+            int pageSize = Convert.ToInt32(_configuration["PageList:PageSize"]);
             int currentPage = pageNumber ?? 1;
 
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-			ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
-			return View(await BaiDangCongTyContext.ToPagedListAsync(currentPage, pageSize));
+            ViewData["CategoryIdList"] = new SelectList(_context.Categories, "Id", "Name");
+			ViewData["CompanyIdList"] = new SelectList(_context.Companies, "Id", "Name");
+            ViewData["CurrentSearchDocs"] = searchdocs;
+            ViewData["CurrentCategoryId"] = CategoryId;
+            ViewData["CurrentCompanyId"] = CompanyId;
+            return View(await BaiDangCongTyContext.ToPagedListAsync(currentPage, pageSize));
         }
 
         // GET: Posts/Details/5
