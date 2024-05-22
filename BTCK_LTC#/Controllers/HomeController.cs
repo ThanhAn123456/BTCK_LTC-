@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using X.PagedList;
 
 namespace BTCK_LTC_.Controllers
 {
@@ -23,7 +24,7 @@ namespace BTCK_LTC_.Controllers
 			_context = context;
 		}
 
-		public async Task<IActionResult> Index(string searchdocs, string CategoryId, string CompanyId)
+		public async Task<IActionResult> Index(string searchdocs, string CategoryId, string CompanyId, int? pageNumber)
         {
 
 			IQueryable<Post> BaiDangCongTyContext = _context.Posts.Include(p => p.Category).Include(p => p.Employee).ThenInclude(e => e.Company);
@@ -45,9 +46,12 @@ namespace BTCK_LTC_.Controllers
 
 			BaiDangCongTyContext = BaiDangCongTyContext.OrderByDescending(p => p.PostDate);
 
-			ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            int pageSize = 4;
+            int currentPage = pageNumber ?? 1;
+
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
 			ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
-			return View(await BaiDangCongTyContext.ToListAsync());
+			return View(await BaiDangCongTyContext.ToPagedListAsync(currentPage, pageSize));
         }
 
         // GET: Posts/Details/5

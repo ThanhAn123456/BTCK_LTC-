@@ -1,4 +1,5 @@
-﻿@model IEnumerable<BTCK_LTC_.Models.Employee>
+﻿@model IPagedList<BTCK_LTC_.Models.Employee>
+@using X.PagedList;
 
 @{
     ViewData["Title"] = "Index";
@@ -48,19 +49,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Gender)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Gender)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Birthday)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Birthday)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Address)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Address)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Email)
             </th>
             @* <th>
                 @Html.DisplayNameFor(model => model.PhoneNumber)
@@ -134,3 +135,49 @@
 }
     </tbody>
 </table>
+
+<nav class="app-pagination mt-5">
+    <ul class="pagination justify-content-center">
+        @if (Model.HasPreviousPage)
+        {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)">Previous</a>
+                    </li>
+        }
+        else
+        {
+                    <li class="page-item disabled">
+                        <a class="page-link">Previous</a>
+                    </li>
+        }
+
+        @for (var i = 1; i <= Model.PageCount; i++)
+        {
+            if (i == Model.PageNumber)
+            {
+                                <li class="page-item active">
+                                    <a class="page-link">@i</a>
+                                </li>
+            }
+            else
+            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
+                                </li>
+            }
+        }
+
+        @if (Model.HasNextPage)
+        {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)">Next</a>
+                        </li>
+        }
+        else
+        {
+                        <li class="page-item disabled">
+                            <a class="page-link">Next</a>
+                        </li>
+        }
+    </ul>
+</nav><!--//app-pagination-->

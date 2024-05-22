@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Components.Web;
+using X.PagedList;
 
 namespace BTCK_LTC_.Controllers
 {
@@ -17,14 +18,16 @@ namespace BTCK_LTC_.Controllers
 	public class CompaniesController : Controller
     {
         private readonly QuanLyBaiDangCongTyContext _context;
+		private readonly IConfiguration _configuration;
 
-        public CompaniesController(QuanLyBaiDangCongTyContext context)
+		public CompaniesController(QuanLyBaiDangCongTyContext context, IConfiguration configuration)
         {
             _context = context;
-        }
+			_configuration = configuration;
+		}
 
 		// GET: Companies
-		public async Task<IActionResult> Index(string searchdocs)
+		public async Task<IActionResult> Index(string searchdocs, int? pageNumber)
         {
             //check role
 			var claims = GetClaims();
@@ -44,7 +47,12 @@ namespace BTCK_LTC_.Controllers
                 CompaniesContext = CompaniesContext.Where(c => c.Name.Contains(searchdocs) || c.Address.Contains(searchdocs));
             }
 
-            return View(await CompaniesContext.ToListAsync());
+			CompaniesContext = CompaniesContext.OrderBy(c => c.Id);
+
+			int pageSize = Convert.ToInt32(_configuration["PageList:PageSize"]);
+			int currentPage = pageNumber ?? 1;
+
+			return View(await CompaniesContext.ToPagedListAsync(currentPage, pageSize));
 		}
 
         // GET: Companies/Details/5

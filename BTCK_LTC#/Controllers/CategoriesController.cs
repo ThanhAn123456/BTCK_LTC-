@@ -8,20 +8,25 @@ using Microsoft.EntityFrameworkCore;
 using BTCK_LTC_.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Drawing.Printing;
+using X.PagedList;
+using System.Configuration;
 
 namespace BTCK_LTC_.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly QuanLyBaiDangCongTyContext _context;
+		private readonly IConfiguration _configuration;
 
-        public CategoriesController(QuanLyBaiDangCongTyContext context)
+		public CategoriesController(QuanLyBaiDangCongTyContext context, IConfiguration configuration)
         {
             _context = context;
-        }
+			_configuration = configuration;
+		}
 
         // GET: Categories
-        public async Task<IActionResult> Index(string searchdocs)
+        public async Task<IActionResult> Index(string searchdocs, int? pageNumber)
         {
 			//check role
 			var claims = GetClaims();
@@ -39,9 +44,14 @@ namespace BTCK_LTC_.Controllers
             if (!string.IsNullOrEmpty(searchdocs))
             {
                 CategoriesContext = CategoriesContext.Where(c => c.Name.Contains(searchdocs));
-            }
+			}
 
-            return View(await CategoriesContext.ToListAsync());
+			CategoriesContext = CategoriesContext.OrderBy(c => c.Id);
+
+			int pageSize = Convert.ToInt32(_configuration["PageList:PageSize"]);
+			int currentPage = pageNumber ?? 1;
+
+			return View(await CategoriesContext.ToPagedListAsync(currentPage, pageSize));
         }
 
         // GET: Categories/Details/5
