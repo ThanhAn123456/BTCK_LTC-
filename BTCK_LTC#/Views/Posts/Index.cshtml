@@ -1,0 +1,168 @@
+﻿@model IPagedList<BTCK_LTC_.Models.Post>
+@using X.PagedList;
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Quản Lý Bài Đăng</h1>
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <p>
+        <a asp-action="CreateThongBao" class="btn btn-outline-success" style="margin: 0px 5px 0px 0px">Thêm mới thông báo</a>
+        <a asp-action="CreateLichTrinh" class="btn btn-outline-success" style="margin: 0px 5px 0px 0px">Thêm mới lịch trình</a>
+    </p>
+    <form class="docs-search-form row gx-1 align-items-center" asp-action="Index">
+        <div class="col-auto">
+            <input type="text" id="search-docs" name="searchdocs" value="@ViewData["CurrentSearchDocs"]" class="form-control search-docs" placeholder="Tìm kiếm">
+        </div>
+        <div class="col-auto">
+            <select class="form-select w-auto" name="CategoryId">
+                <option value="">-- All --</option>
+                @foreach (var item in ViewBag.CategoryIdList as SelectList)
+                {
+                    @if (item.Value == ViewBag.CurrentCategoryId)
+                    {
+                        <option selected="" value="@item.Value">@item.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }	
+                }
+            </select>
+        </div>
+        <div class="col-auto">
+            
+            <select class="form-select w-auto" name="PostDate">
+                @if (ViewBag.PostDate == "1" || ViewBag.PostDate == null)
+                {
+                        <option selected="" value="1">Mới nhất</option>
+                        <option value="2">Cũ nhất</option>
+                }
+                else
+                {
+                        <option value="1">Mới nhất</option>
+                        <option selected="" value="2">Cũ nhất</option>
+                }           
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn app-btn-secondary">Tìm kiếm</button>
+        </div>
+    </form>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Title)
+            </th>
+            @* <th>
+                @Html.DisplayNameFor(model => model.Content)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Thumbnail)
+            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().PostDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Employee)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+           @*  <td>
+                @Html.DisplayFor(modelItem => item.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Thumbnail)
+            </td> *@
+            <td> 
+                @Html.DisplayFor(modelItem => item.Date)
+            </td> 
+            <td>
+                @Html.DisplayFor(modelItem => item.PostDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">Sửa</a>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info">Chi tiết</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Xóa</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<nav class="app-pagination mt-5">
+    <ul class="pagination justify-content-center">
+        @if (Model.HasPreviousPage)
+        {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)" 
+                        asp-route-searchdocs="@ViewData["CurrentSearchDocs"]"
+                        asp-route-CategoryId="@ViewData["CurrentCategoryId"]">Previous</a>
+                    </li>
+        }
+        else
+        {
+                    <li class="page-item disabled">
+                        <a class="page-link">Previous</a>
+                    </li>
+        }
+
+        @for (var i = 1; i <= Model.PageCount; i++)
+        {
+            if (i == Model.PageNumber)
+            {
+                                <li class="page-item active">
+                                    <a class="page-link">@i</a>
+                                </li>
+            }
+            else
+            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" 
+                                    asp-route-searchdocs="@ViewData["CurrentSearchDocs"]"
+                                    asp-route-CategoryId="@ViewData["CurrentCategoryId"]">@i</a>
+                                </li>
+            }
+        }
+
+        @if (Model.HasNextPage)
+        {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)" 
+                        asp-route-searchdocs="@ViewData["CurrentSearchDocs"]"
+                        asp-route-CategoryId="@ViewData["CurrentCategoryId"]">Next</a>
+                    </li>
+        }
+        else
+        {
+                    <li class="page-item disabled">
+                        <a class="page-link">Next</a>
+                    </li>
+        }
+    </ul>
+</nav><!--//app-pagination-->
