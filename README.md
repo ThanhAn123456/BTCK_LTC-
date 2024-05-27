@@ -14,6 +14,12 @@
 
 ## Giới thiệu
 
+Nguyễn Thành An
+
+MSV: 21115053120201
+
+Lớp học phần: 223LTC04
+
 Đây là dự án quản lý nội dung công ty đơn giản sử dụng ASP.NET Core MVC và SQL Server theo phương pháp Database First.
 
 ## Chức năng chính
