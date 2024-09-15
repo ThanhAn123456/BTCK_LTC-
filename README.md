@@ -1,5 +1,10 @@
 # BTCK_LTC#
+## Deployed
+Bạn có thể truy cập web qua địa chỉ sau: http://thanhan123456-001-site1.ktempurl.com
 
+- Username: `admin`
+
+- Password: `123456`
 ## Mục lục
 
 - [Giới thiệu](#giới-thiệu)
