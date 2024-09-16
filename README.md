@@ -2,6 +2,14 @@
 ## Deployed
 Bạn có thể truy cập web qua địa chỉ sau: http://thanhan123456-001-site1.ktempurl.com
 
+Để truy cập vào trang web:
+
+- Username: `11195467`
+
+- Password: `60-dayfreetrial`
+
+Để login:
+
 - Username: `admin`
 
 - Password: `123456`
